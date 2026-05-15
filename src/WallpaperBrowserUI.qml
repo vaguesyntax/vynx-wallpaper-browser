@@ -17,15 +17,14 @@ Item {
     property real padding: 4  
     property var inputField: searchInputField  
     property string commandPrefix: "/"  
-    property string currentService: wallpaperBrowser.currentProvider ?? "unsplash"  
+    property string currentService: ExtensionServices.get("vynx-wallpaper-browser", "wallpaperBrowserService").currentProvider ?? "unsplash"  
     property var suggestionQuery: ""  
     property var suggestionList: []  
     property int imageLimit: 20
 
-    property alias wallpaperBrowser: ExtensionServices.get("vynx-wallpaper-browser", "wallpaperBrowserService")
       
     // Exact same pattern as Anime  
-    readonly property var responses: wallpaperBrowser.responses  
+    readonly property var responses: ExtensionServices.get("vynx-wallpaper-browser", "wallpaperBrowserService").responses  
     property int lastResponseLength: 0  
       
     // Download paths  
@@ -119,7 +118,7 @@ Item {
             }  
               
             MaterialLoadingIndicator {
-                visible: wallpaperBrowser.runningRequests > 0
+                visible: ExtensionServices.get("vynx-wallpaper-browser", "wallpaperBrowserService").runningRequests > 0
                 id: loadingIndicator  
                 z: 4  
                 anchors {  
@@ -127,7 +126,7 @@ Item {
                     bottom: parent.bottom  
                     bottomMargin: 20 + (root.pullLoading ? 0 : Math.max(0, (root.normalizedPullDistance - 0.5) * 50))  
                 }  
-                loading: wallpaperBrowser.runningRequests > 0  
+                loading: ExtensionServices.get("vynx-wallpaper-browser", "wallpaperBrowserService").runningRequests > 0  
             }  
         }  
           
@@ -224,7 +223,7 @@ Item {
                 id: dropArea
                 anchors.fill: parent
 
-                readonly property string currentProvider: wallpaperBrowser.currentProvider
+                readonly property string currentProvider: ExtensionServices.get("vynx-wallpaper-browser", "wallpaperBrowserService").currentProvider
                 function getWallhavenId(url) {
                     const urlStr = url.toString()
                     const fileName = urlStr.split('/').pop() 
@@ -251,20 +250,20 @@ Item {
 
                             const wallhavenId = getWallhavenId(fileUrl)
                             if (currentProvider !== "wallhaven") {
-                                wallpaperBrowser.addSystemMessage(Translation.tr("Similar images only works with wallhaven service"));  
+                                ExtensionServices.get("vynx-wallpaper-browser", "wallpaperBrowserService").addSystemMessage(Translation.tr("Similar images only works with wallhaven service"));  
                                 continue
                             }
                             if (!Images.isValidImageByName(fileUrl)) {
-                                wallpaperBrowser.addSystemMessage(Translation.tr("Please drop an image file"));  
+                                ExtensionServices.get("vynx-wallpaper-browser", "wallpaperBrowserService").addSystemMessage(Translation.tr("Please drop an image file"));  
                                 continue
                             }
                             if (!wallhavenId) {
-                                wallpaperBrowser.addSystemMessage(Translation.tr("Please drop a valid wallhaven image named like **wallhaven-######.png**"));  
+                                ExtensionServices.get("vynx-wallpaper-browser", "wallpaperBrowserService").addSystemMessage(Translation.tr("Please drop a valid wallhaven image named like **wallhaven-######.png**"));  
                                 continue
                             }
 
                             console.log("[Wallpaper Browser] Dropped image:", fileUrl)
-                            wallpaperBrowser.addSimilarImageMessage(Translation.tr("Searching for a similar image:"), fileUrl)
+                            ExtensionServices.get("vynx-wallpaper-browser", "wallpaperBrowserService").addSimilarImageMessage(Translation.tr("Searching for a similar image:"), fileUrl)
                             root.handleInput(root.commandPrefix + "similar " + wallhavenId);
                         }
                         drop.accept(Qt.CopyAction)
@@ -284,7 +283,7 @@ Item {
                     id: searchInputField  
                     Layout.fillWidth: true  
                     Layout.fillHeight: true  
-                    placeholderText: wallpaperBrowser.currentProvider === "wallhaven" ? Translation.tr("Search or drag wallpapers...") : Translation.tr("Search wallpapers... (e.g., nature, abstract)")  
+                    placeholderText: ExtensionServices.get("vynx-wallpaper-browser", "wallpaperBrowserService").currentProvider === "wallhaven" ? Translation.tr("Search or drag wallpapers...") : Translation.tr("Search wallpapers... (e.g., nature, abstract)")  
                       
                     onTextChanged: {  
                         if (searchInputField.text.length === 0) {  
@@ -415,8 +414,8 @@ Item {
 
                 ApiInputBoxIndicator {  
                     icon: "filter_alt"  
-                    text: wallpaperBrowser.currentSortType  
-                    tooltipText: Translation.tr("Current sort type: %1\nSet it with %2sort SORT_TYPE").arg(wallpaperBrowser.currentSortType).arg(root.commandPrefix)  
+                    text: ExtensionServices.get("vynx-wallpaper-browser", "wallpaperBrowserService").currentSortType  
+                    tooltipText: Translation.tr("Current sort type: %1\nSet it with %2sort SORT_TYPE").arg(ExtensionServices.get("vynx-wallpaper-browser", "wallpaperBrowserService").currentSortType).arg(root.commandPrefix)  
                 }  
                   
                 ApiInputBoxIndicator {  
@@ -460,124 +459,124 @@ Item {
         { name: "api", description: Translation.tr("Set API key for current service. Usage: %1api YOUR_API_KEY").arg(root.commandPrefix), execute: args => {  
             if (args.length === 0) {  
                 const currentService = root.currentService;  
-                const unsplashApiKey = wallpaperBrowser.unsplashApiToken
+                const unsplashApiKey = ExtensionServices.get("vynx-wallpaper-browser", "wallpaperBrowserService").unsplashApiToken
                 
                 if (currentService === "unsplash") {
                     if (unsplashApiKey != "") {
-                        wallpaperBrowser.addSystemMessage(Translation.tr("Unsplash API key is already set"));  
+                        ExtensionServices.get("vynx-wallpaper-browser", "wallpaperBrowserService").addSystemMessage(Translation.tr("Unsplash API key is already set"));  
                         return;
                     } else {
-                        wallpaperBrowser.addSystemMessage(Translation.tr("Unsplash API key not set. To get an API key: \n- Go to https://unsplash.com/developers and sign up/in \n- Create a new app in your apps page \n- Get the API key from Access Key and set it with %1api YOUR_API_KEY").arg(root.commandPrefix));  
+                        ExtensionServices.get("vynx-wallpaper-browser", "wallpaperBrowserService").addSystemMessage(Translation.tr("Unsplash API key not set. To get an API key: \n- Go to https://unsplash.com/developers and sign up/in \n- Create a new app in your apps page \n- Get the API key from Access Key and set it with %1api YOUR_API_KEY").arg(root.commandPrefix));  
                         return
                     }
                 }
             }
 
             if (currentService === "wallhaven") {  
-                wallpaperBrowser.addSystemMessage(Translation.tr("Wallhaven doesn't require an API key"));  
+                ExtensionServices.get("vynx-wallpaper-browser", "wallpaperBrowserService").addSystemMessage(Translation.tr("Wallhaven doesn't require an API key"));  
                 return;  
             } 
 
             if (args[0].length < 20) { // not a valid api key
-                wallpaperBrowser.addSystemMessage(Translation.tr("Please provide a valid API key")); 
+                ExtensionServices.get("vynx-wallpaper-browser", "wallpaperBrowserService").addSystemMessage(Translation.tr("Please provide a valid API key")); 
                 KeyringStorage.setNestedField(["apiKeys", `wallpapers_${currentService}`], "");  
                 return; 
             }
               
             KeyringStorage.setNestedField(["apiKeys", `wallpapers_${currentService}`], args[0].trim());  
-            wallpaperBrowser.addSystemMessage(Translation.tr(`API key set for %1`).arg(currentService));  
+            ExtensionServices.get("vynx-wallpaper-browser", "wallpaperBrowserService").addSystemMessage(Translation.tr(`API key set for %1`).arg(currentService));  
         } },  
         { name: "service", description: Translation.tr("Change wallpaper service. Usage: %1service SERVICE").arg(root.commandPrefix), execute: args => {  
             if (args.length === 0) {  
-                wallpaperBrowser.addSystemMessage(Translation.tr("Usage: %1service SERVICE, available services: \n\n Unsplash: \n- Requires API key, type %1api to get started. \n\nWallhaven: \n- Doesn't require API key \n- You can search similar images").arg(root.commandPrefix));  
+                ExtensionServices.get("vynx-wallpaper-browser", "wallpaperBrowserService").addSystemMessage(Translation.tr("Usage: %1service SERVICE, available services: \n\n Unsplash: \n- Requires API key, type %1api to get started. \n\nWallhaven: \n- Doesn't require API key \n- You can search similar images").arg(root.commandPrefix));  
                 return;  
             }  
             const service = args[0].toLowerCase();  
             if (service === "unsplash" || service === "wallhaven") {  
-                wallpaperBrowser.setProvider(service);  
+                ExtensionServices.get("vynx-wallpaper-browser", "wallpaperBrowserService").setProvider(service);  
             } else {  
-                wallpaperBrowser.addSystemMessage(Translation.tr("Invalid service. Use: unsplash or wallhaven"));  
+                ExtensionServices.get("vynx-wallpaper-browser", "wallpaperBrowserService").addSystemMessage(Translation.tr("Invalid service. Use: unsplash or wallhaven"));  
             }  
         } }, 
         { name: "similar", description: Translation.tr("Find similar images (only for Wallhaven). Usage: %1similar WALLHAVEN_IMAGE_ID").arg(root.commandPrefix), execute: args => {
             const currentProvider = root.currentService;
             if (currentProvider !== "wallhaven") {
-                wallpaperBrowser.addSystemMessage(Translation.tr("Similar images only works with wallhaven service"))
+                ExtensionServices.get("vynx-wallpaper-browser", "wallpaperBrowserService").addSystemMessage(Translation.tr("Similar images only works with wallhaven service"))
                 return;
             }
             if (args.length === 0) {  
-                wallpaperBrowser.addSystemMessage(Translation.tr("Usage: %1similar WALLHAVEN_IMAGE_ID").arg(root.commandPrefix));  
+                ExtensionServices.get("vynx-wallpaper-browser", "wallpaperBrowserService").addSystemMessage(Translation.tr("Usage: %1similar WALLHAVEN_IMAGE_ID").arg(root.commandPrefix));  
                 return;  
             }  
-            wallpaperBrowser.moreLikeThisPicture(args[0], 1);
+            ExtensionServices.get("vynx-wallpaper-browser", "wallpaperBrowserService").moreLikeThisPicture(args[0], 1);
             return; 
         } },
         { name: "anime", description: Translation.tr("Toggle anime results. Usage: %1anime SHOW/HIDE").arg(root.commandPrefix), execute: args => {  
             const currentProvider = root.currentService;
             if (currentProvider !== "wallhaven") {
-                wallpaperBrowser.addSystemMessage(Translation.tr("Anime toggle only works with wallhaven service"))
+                ExtensionServices.get("vynx-wallpaper-browser", "wallpaperBrowserService").addSystemMessage(Translation.tr("Anime toggle only works with wallhaven service"))
                 return;
             }
             if (args.length === 0) {  
-                wallpaperBrowser.addSystemMessage(Translation.tr(`Anime results: %1. Available options: show, hide`).arg(wallpaperBrowser.showAnimeResults ? "visible" : "hidden"));  
+                ExtensionServices.get("vynx-wallpaper-browser", "wallpaperBrowserService").addSystemMessage(Translation.tr(`Anime results: %1. Available options: show, hide`).arg(ExtensionServices.get("vynx-wallpaper-browser", "wallpaperBrowserService").showAnimeResults ? "visible" : "hidden"));  
                 return;  
             }  
             if (args[0] !== "show" && args[0] !== "hide") {
-                wallpaperBrowser.addSystemMessage(Translation.tr(`Available options: show, hide`));  
+                ExtensionServices.get("vynx-wallpaper-browser", "wallpaperBrowserService").addSystemMessage(Translation.tr(`Available options: show, hide`));  
                 return;
             }
             const showAnime = args[0] === "show" ? true : false; 
-            wallpaperBrowser.addSystemMessage(Translation.tr(`Anime results: %1`).arg(showAnime ? "visible" : "hidden"));
-            wallpaperBrowser.setAnimeResults(showAnime);  
+            ExtensionServices.get("vynx-wallpaper-browser", "wallpaperBrowserService").addSystemMessage(Translation.tr(`Anime results: %1`).arg(showAnime ? "visible" : "hidden"));
+            ExtensionServices.get("vynx-wallpaper-browser", "wallpaperBrowserService").setAnimeResults(showAnime);  
         } },
         { name: "sort", description: Translation.tr("Sort results. Usage: %1sort SORT_OPTION").arg(root.commandPrefix), execute: args => {  
             const currentService = root.currentService;
             if (args.length === 0) {  
                 if (currentService === "unsplash") {
-                    wallpaperBrowser.addSystemMessage(Translation.tr("Please add a sort option\nAvailable sorts: relevant, latest"));
+                    ExtensionServices.get("vynx-wallpaper-browser", "wallpaperBrowserService").addSystemMessage(Translation.tr("Please add a sort option\nAvailable sorts: relevant, latest"));
                     return;
                 }
 
                 if (currentService === "wallhaven") {
-                    wallpaperBrowser.addSystemMessage(Translation.tr("Please add a sort option\nAvailable sorts: date_added, relevance, random, views, favourites, toplist"));
+                    ExtensionServices.get("vynx-wallpaper-browser", "wallpaperBrowserService").addSystemMessage(Translation.tr("Please add a sort option\nAvailable sorts: date_added, relevance, random, views, favourites, toplist"));
                     return;
                 }
             }  
             const sort = args[0].toLowerCase(); 
             if (currentService === "unsplash") {
                 if (sort === "relevant" || sort === "latest") {
-                    wallpaperBrowser.addSystemMessage(Translation.tr("Sort option is set to %1").arg(sort));
-                    wallpaperBrowser.setSort(sort);
+                    ExtensionServices.get("vynx-wallpaper-browser", "wallpaperBrowserService").addSystemMessage(Translation.tr("Sort option is set to %1").arg(sort));
+                    ExtensionServices.get("vynx-wallpaper-browser", "wallpaperBrowserService").setSort(sort);
                 } else {
-                    wallpaperBrowser.addSystemMessage(Translation.tr("Invalid sort option. Use: relevant or latest"));
+                    ExtensionServices.get("vynx-wallpaper-browser", "wallpaperBrowserService").addSystemMessage(Translation.tr("Invalid sort option. Use: relevant or latest"));
                 }
             }
             if (currentService === "wallhaven") {
                 if (sort === "date_added" || sort === "relevance" || sort === "random" || sort === "views" || sort === "favourites" || sort === "toplist") {
-                    wallpaperBrowser.addSystemMessage(Translation.tr("Sort option is set to %1").arg(sort));
-                    wallpaperBrowser.setSort(sort);
+                    ExtensionServices.get("vynx-wallpaper-browser", "wallpaperBrowserService").addSystemMessage(Translation.tr("Sort option is set to %1").arg(sort));
+                    ExtensionServices.get("vynx-wallpaper-browser", "wallpaperBrowserService").setSort(sort);
                 } else {
-                    wallpaperBrowser.addSystemMessage(Translation.tr("Invalid sort option. Use: date_added, relevance, random, views, favourites, toplist"));
+                    ExtensionServices.get("vynx-wallpaper-browser", "wallpaperBrowserService").addSystemMessage(Translation.tr("Invalid sort option. Use: date_added, relevance, random, views, favourites, toplist"));
                 }
             }
         } }, 
         { name: "clear", description: Translation.tr("Clear the current list of images"), execute: () => {  
-            wallpaperBrowser.clearResponses();  
+            ExtensionServices.get("vynx-wallpaper-browser", "wallpaperBrowserService").clearResponses();  
         } },  
         { name: "help", description: Translation.tr("Shows a list of available commands"), execute: () => {  
-            wallpaperBrowser.addSystemMessage(Translation.tr("Available commands are:\n- %1api API_KEY: Set API key for current service\n- %1service SERVICE: Change wallpaper service\n- %1similar IMAGE_ID: Find similar images, you must enter wallhaven image id thats located in the file name (e.g. wallhaven-lyz3d2.png's id is lyz3d2)\n- %1anime SHOW/HIDE: Toggle anime results (only for wallhaven service)\n- %1sort SORT_OPTION: Sort results\n- %1clear: Clear the current list of images\n- %1next: Load next page").arg(root.commandPrefix));
+            ExtensionServices.get("vynx-wallpaper-browser", "wallpaperBrowserService").addSystemMessage(Translation.tr("Available commands are:\n- %1api API_KEY: Set API key for current service\n- %1service SERVICE: Change wallpaper service\n- %1similar IMAGE_ID: Find similar images, you must enter wallhaven image id thats located in the file name (e.g. wallhaven-lyz3d2.png's id is lyz3d2)\n- %1anime SHOW/HIDE: Toggle anime results (only for wallhaven service)\n- %1sort SORT_OPTION: Sort results\n- %1clear: Clear the current list of images\n- %1next: Load next page").arg(root.commandPrefix));
         } },
         { name: "next", description: Translation.tr("Load next page"), execute: () => {  
             console.log("[Wallpapers] Next page")
             if (root.responses.length > 0) {  
                 const lastResponse = root.responses[root.responses.length - 1];  
                 if (lastResponse.page > 0) {  
-                    if (wallpaperBrowser.similarImageId != "") { // more like this feature
-                        wallpaperBrowser.moreLikeThisPicture(wallpaperBrowser.similarImageId, lastResponse.page + 1)
+                    if (ExtensionServices.get("vynx-wallpaper-browser", "wallpaperBrowserService").similarImageId != "") { // more like this feature
+                        ExtensionServices.get("vynx-wallpaper-browser", "wallpaperBrowserService").moreLikeThisPicture(ExtensionServices.get("vynx-wallpaper-browser", "wallpaperBrowserService").similarImageId, lastResponse.page + 1)
                         return;
                     }
                     // normal search, next page
-                    wallpaperBrowser.makeRequest(lastResponse.tags, root.imageLimit, lastResponse.page + 1);  
+                    ExtensionServices.get("vynx-wallpaper-browser", "wallpaperBrowserService").makeRequest(lastResponse.tags, root.imageLimit, lastResponse.page + 1);  
                 }  
             }  
         } }
@@ -592,7 +591,7 @@ Item {
             if (commandObj) {  
                 commandObj.execute(args);  
             } else {  
-                wallpaperBrowser.addSystemMessage(Translation.tr(`Unknown command: %1`).arg(command));  
+                ExtensionServices.get("vynx-wallpaper-browser", "wallpaperBrowserService").addSystemMessage(Translation.tr(`Unknown command: %1`).arg(command));  
             }  
         } else {  
             // Parse page number if present  
@@ -610,7 +609,7 @@ Item {
             });  
               
             if (tags.length > 0) {  
-                wallpaperBrowser.makeRequest(tags, root.imageLimit, page);  
+                ExtensionServices.get("vynx-wallpaper-browser", "wallpaperBrowserService").makeRequest(tags, root.imageLimit, page);  
             }  
         }  
     }  
