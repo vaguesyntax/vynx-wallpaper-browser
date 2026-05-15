@@ -1,0 +1,16 @@
+{
+    "name": "Wallpaper Browser",
+    "description": "Wallpaper browsing ability with wallhaven and unsplash support",
+    "version": "1.0.0",
+    "author": "vaguesyntax",
+    "icon": "wallpaper",
+    "coverArt": "cover.png",
+    "contributes": {
+        "sidebarLeftPages": [
+            { "identifier": "wallpaperBrowser", "title": "Browser", "icon": "wallpaper", "component": "src/WallpaperBrowserUI.qml" }
+        ],
+        "services": [
+            { "id": "wallpaperBrowserService", "qml": "src/WallpaperBrowser.qml" }
+        ]
+    }
+}
