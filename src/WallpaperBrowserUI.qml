@@ -9,7 +9,8 @@ import QtQuick.Controls
 import QtQuick.Layouts  
 import Qt5Compat.GraphicalEffects  
 import Quickshell  
-  
+import "./wallpaperBrowser"  
+
 Item {  
     id: root  
     property real padding: 4  

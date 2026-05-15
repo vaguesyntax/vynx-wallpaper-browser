@@ -4,7 +4,7 @@
     "version": "1.0.0",
     "author": "vaguesyntax",
     "icon": "wallpaper",
-    "coverArt": "cover.png",
+    "shapeString": "Ghostish",
     "contributes": {
         "sidebarLeftPages": [
             { "identifier": "wallpaperBrowser", "title": "Browser", "icon": "wallpaper", "component": "src/WallpaperBrowserUI.qml" }
