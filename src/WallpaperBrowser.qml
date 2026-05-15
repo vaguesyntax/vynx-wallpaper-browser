@@ -1,6 +1,3 @@
-pragma Singleton  
-pragma ComponentBehavior: Bound  
-  
 import qs.modules.common  
 import qs.services  
 import Quickshell;  
@@ -9,7 +6,7 @@ import QtQuick;
 /**  
  * A service for interacting with wallpaper APIs (Unsplash and Wallhaven).  
  */  
-Singleton {  
+QtObject {  
     id: root  
     property Component unsplashResponseDataComponent: WallpaperResponseData {}  
   
