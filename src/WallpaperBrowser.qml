@@ -2,7 +2,8 @@ import qs.modules.common
 import qs.services  
 import Quickshell;  
 import QtQuick;  
-  
+import "./wallpaperBrowser"
+
 /**  
  * A service for interacting with wallpaper APIs (Unsplash and Wallhaven).  
  */  
