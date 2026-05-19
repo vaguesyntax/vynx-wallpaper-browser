@@ -10,7 +10,7 @@ import "./wallpaperBrowser"
 QtObject {  
     id: root  
     property Component unsplashResponseDataComponent: WallpaperResponseData {}  
-    readonly property string extensionId: "vynx-wallpaper-browser"
+    property string extensionId: "vynx-wallpaper-browser"
   
     signal tagSuggestion(string query, var suggestions)  
     signal responseFinished()  
@@ -131,7 +131,7 @@ QtObject {
   
     function setProvider(provider) {  
         provider = provider.toLowerCase()  
-        if (providerList.indexOf(provider) !== -1) {  
+        if (root.providerList.indexOf(provider) !== -1) {  
             ExtensionManager.setExtensionConfig(root.extensionId, "service", provider)
             root.addSystemMessage(Translation.tr("Provider set to ") + providers[provider].name) 
             if (provider === "unsplash") {
