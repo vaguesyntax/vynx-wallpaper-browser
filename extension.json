@@ -12,5 +12,10 @@
         "services": [
             { "id": "wallpaperBrowserService", "qml": "src/WallpaperBrowser.qml" }
         ]
+    },
+    "configDefaults": {
+        "service": "wallhaven",
+        "sort": "favourites",
+        "showAnimeResults": false 
     }
 }

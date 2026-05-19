@@ -10,20 +10,21 @@ import "./wallpaperBrowser"
 QtObject {  
     id: root  
     property Component unsplashResponseDataComponent: WallpaperResponseData {}  
+    readonly property string extensionId: "vynx-wallpaper-browser"
   
     signal tagSuggestion(string query, var suggestions)  
     signal responseFinished()  
   
     property string unsplashApiToken: KeyringStorage.keyringData.apiKeys.wallpapers_unsplash ?? ""
-    property string wallhavenApiToken: Config.options.wallhaven?.apiKey ?? ""  
+    property string wallhavenApiToken: Config.options.wallhaven?.apiKey ?? ""  // This is not used ig, but ill let it stay here for now
     property string failMessage: Translation.tr("That didn't work. Tips:\n- Check your search query\n- Try different keywords\n- Check your API key under settings")  
     property var responses: []  
     property int runningRequests: 0  
     property var providerList: ["unsplash", "wallhaven"]  
-    property var currentProvider: Config.options.wallpapers.service ?? "wallhaven" // defaulting to wallhaven bc it doesnt require api key
+    property var currentProvider: ExtensionManager.getExtensionConfig(root.extensionId, "service")
 
-    property string currentSortType: Config.options.wallpapers.sort ?? "favourites" // Options for wallhaven: date_added, relevance, random, views, favourites, toplist // Options for unsplash: relevant, latest
-    property bool showAnimeResults: Config.options.wallpapers.showAnimeResults ?? false
+    property string currentSortType: ExtensionManager.getExtensionConfig(root.extensionId, "sort") // Options for wallhaven: date_added, relevance, random, views, favourites, toplist // Options for unsplash: relevant, latest
+    property bool showAnimeResults: ExtensionManager.getExtensionConfig(root.extensionId, "showAnimeResults")
 
     property string similarImageId: ""
     property var currentSearchTags: []
@@ -121,17 +122,17 @@ QtObject {
 
     function setSort(sort) {
         sort = sort.toLowerCase() 
-        Config.options.wallpapers.sort = sort
+        ExtensionManager.setExtensionConfig(root.extensionId, "sort", sort)
     }
 
     function setAnimeResults(show) {
-        Config.options.wallpapers.showAnimeResults = show
+        ExtensionManager.setExtensionConfig(root.extensionId, "showAnimeResults", show)
     }
   
     function setProvider(provider) {  
         provider = provider.toLowerCase()  
         if (providerList.indexOf(provider) !== -1) {  
-            Config.options.wallpapers.service = provider
+            ExtensionManager.setExtensionConfig(root.extensionId, "service", provider)
             root.addSystemMessage(Translation.tr("Provider set to ") + providers[provider].name) 
             if (provider === "unsplash") {
                 root.currentSortType = "relevance" // default value

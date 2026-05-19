@@ -27,8 +27,9 @@ Item {
     property int lastResponseLength: 0  
       
     // Download paths  
-    property string downloadPath: Config.options.wallpapers.paths.download 
-    property string nsfwPath: Config.options.wallpapers.paths.nsfw // not sure if needed
+    // TODO: make these configurable
+    property string downloadPath: FileUtils.trimFileProtocol(`${Directories.home}/Pictures/Wallpapers`)
+    property string nsfwPath: FileUtils.trimFileProtocol(`${Directories.home}/Pictures/Wallpapers/NSFW`) // not sure if needed
       
     // Pagination properties  
     property real scrollOnNewResponse: 100  
