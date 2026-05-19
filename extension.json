@@ -5,6 +5,7 @@
     "author": "vaguesyntax",
     "icon": "wallpaper",
     "shapeString": "Ghostish",
+    "extensionId": "vynx-wallpaper-browser",
     "contributes": {
         "sidebarLeftPages": [
             { "identifier": "wallpaperBrowser", "title": "Browser", "icon": "wallpaper", "component": "src/WallpaperBrowserUI.qml" }
