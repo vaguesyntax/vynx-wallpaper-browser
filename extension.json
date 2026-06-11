@@ -18,5 +18,13 @@
         "service": "wallhaven",
         "sort": "favourites",
         "showAnimeResults": false 
+    },
+    "configSchema": {
+        "showAnimeResults": {
+            "type": "bool",
+            "label": "Show Anime Results",
+            "default": false,
+            "icon": "manga"
+        }
     }
 }
